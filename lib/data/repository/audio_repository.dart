@@ -11,8 +11,18 @@ class AudioRepository {
     //   Permission.manageExternalStorage,
     //   Pe rmission.mediaLibrary,
     // ].request();
-    final PermissionStatus permissionStatus = await Permission.storage.request();
-    if (permissionStatus.isGranted) {
+    // final PermissionStatus permissionStatus = await Permission.storage.request();
+    //
+    // if (permissionStatus.isGranted) {
+
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+      Permission.manageExternalStorage,
+    ].request();
+
+    var storage = statuses[Permission.storage];
+    var manageExternalStorage = statuses[Permission.manageExternalStorage];
+    if (storage!.isGranted || manageExternalStorage!.isGranted) {
       return Result.success(await _audioQuery.querySongs(
         sortType: SongSortType.ALBUM,
       ));
